@@ -1,0 +1,28 @@
+{
+  "name": "clean-code-and-architecture",
+  "version": "1.0.0",
+  "description": "Curso de clean code e clean architecture",
+  "main": "index.js",
+  "scripts": {
+    "tsc:init": "tsc --init",
+    "build": "tsc",
+    "test": "tsc && jest dist/"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/adrianodts/clean-code-and-architecture.git"
+  },
+  "author": "Adriano Dantas",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/adrianodts/clean-code-and-architecture/issues"
+  },
+  "homepage": "https://github.com/adrianodts/clean-code-and-architecture#readme",
+  "dependencies": {
+    "typescript": "^4.4.3"
+  },
+  "devDependencies": {
+    "@types/jest": "^27.0.1",
+    "jest": "^27.2.0"
+  }
+}
