@@ -24,3 +24,6 @@ Faça a modelagem da forma que desejar e não se preocupe por enquanto, vamos im
 Dicas
 Devem existir no mínimo 2 arquivos, um de teste e outro que implementa os cenários propostos
 Tente seguir com disciplina, criando primeiro um teste que falha, depois fazendo e teste passar e refatorando
+
+
+

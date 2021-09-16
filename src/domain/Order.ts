@@ -6,10 +6,12 @@ export default class Order {
     cpf: Cpf;
     items: OrderItem[];
     coupon: Coupon | undefined;
+    freight: number;
 
     constructor(cpf: string) {
         this.cpf = new Cpf(cpf);
         this.items = [];
+        this.freight = 0;
     }
 
     get total(): number {
@@ -20,15 +22,19 @@ export default class Order {
         if (this.coupon) {
             total -= (total * this.coupon.percentDiscount / 100);
         }
+        total += this.freight;
+    
         return total;
     }
 
-    addItem(description: string, price: number, quantity: number) {
-        this.items.push(new OrderItem(description, price, quantity));
+    addItem(id: string, price: number, quantity: number) {
+        this.items.push(new OrderItem(id, price, quantity));
     }
 
-    addCoupon(name: string, percentDiscount: number) {
-        this.coupon = new Coupon(name, percentDiscount);
+    addCoupon(coupon: Coupon) {
+        if (!coupon.isExpired()) {
+            this.coupon = coupon;
+        }
     }
 }
 

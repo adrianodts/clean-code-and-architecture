@@ -3,13 +3,13 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const Coupon_1 = __importDefault(require("./Coupon"));
 const Cpf_1 = __importDefault(require("./Cpf"));
 const OrderItem_1 = __importDefault(require("./OrderItem"));
 class Order {
     constructor(cpf) {
         this.cpf = new Cpf_1.default(cpf);
         this.items = [];
+        this.freight = 0;
     }
     get total() {
         let total = this.items.reduce(function (total, item) {
@@ -18,13 +18,16 @@ class Order {
         if (this.coupon) {
             total -= (total * this.coupon.percentDiscount / 100);
         }
+        total += this.freight;
         return total;
     }
-    addItem(description, price, quantity) {
-        this.items.push(new OrderItem_1.default(description, price, quantity));
+    addItem(id, price, quantity) {
+        this.items.push(new OrderItem_1.default(id, price, quantity));
     }
-    addCoupon(name, percentDiscount) {
-        this.coupon = new Coupon_1.default(name, percentDiscount);
+    addCoupon(coupon) {
+        if (!coupon.isExpired()) {
+            this.coupon = coupon;
+        }
     }
 }
 exports.default = Order;
