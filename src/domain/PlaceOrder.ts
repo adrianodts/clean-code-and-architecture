@@ -1,27 +1,33 @@
+import Coupon from './Coupon';
 import Order from './Order';
-import OrderInputDTO from "./OrderInputDTO";
-import OrderOutputDTO from "./OrderOutputDTO";
+import PlaceOrderInputDTO from "./PlaceOrderInputDTO";
+import PlaceOrderOutputDTO from "./PlaceOrderOutputDTO";
 
 export default class PlaceOrder {
 
-    orderInputDTO: OrderInputDTO;
     order: Order[];
+    coupons: Coupon[];
 
-    constructor(orderInputDTO: OrderInputDTO) {
-        this.orderInputDTO = orderInputDTO;
+    constructor() {
         this.order = [];
+        this.coupons = [
+            new Coupon('FREE20', 20)
+        ];
     }
     
-    execute(): OrderOutputDTO {
-        const order = new Order(this.orderInputDTO.cpf);
-        this.orderInputDTO.items.forEach(item => {
+    execute(input: PlaceOrderInputDTO): PlaceOrderOutputDTO {
+        const order = new Order(input.cpf);
+        for(const item of input.items) {
             order.addItem(item.description, item.price, item.quantity);
-        });
-        if(this.orderInputDTO.coupon) {
-            order.addCoupon(this.orderInputDTO.coupon.name, this.orderInputDTO.coupon.percentDiscount);
+        }
+        if(input.coupon) {
+            const coupon = this.coupons.find(coupon => coupon.name === input.coupon);
+            if (coupon) {
+                order.addCoupon(coupon.name, coupon.percentDiscount);
+            }
         }
         const total = order.total;
         this.order.push(order);
-        return new OrderOutputDTO(total);
+        return new PlaceOrderOutputDTO({ total: total });
     }
 }
