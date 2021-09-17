@@ -3,15 +3,20 @@ import Cpf from "./Cpf";
 import OrderItem from "./OrderItem";
 
 export default class Order {
+
+    id: string;
     cpf: Cpf;
     items: OrderItem[];
     coupon: Coupon | undefined;
     freight: number;
+    orderDate: Date;
 
     constructor(cpf: string) {
+        this.id = '';
         this.cpf = new Cpf(cpf);
         this.items = [];
         this.freight = 0;
+        this.orderDate =  new Date();
     }
 
     get total(): number {

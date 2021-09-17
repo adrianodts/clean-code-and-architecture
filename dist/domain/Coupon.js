@@ -1,8 +1,8 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 class Coupon {
-    constructor(name, percentDiscount, expiredDate) {
-        this.name = name;
+    constructor(code, percentDiscount, expiredDate) {
+        this.code = code;
         this.percentDiscount = percentDiscount;
         this.expiredDate = expiredDate;
     }

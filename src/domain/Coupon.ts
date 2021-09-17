@@ -1,10 +1,10 @@
 export default class Coupon {
-    name: string;
+    code: string;
     percentDiscount: number;
     expiredDate: Date;
 
-    constructor(name: string, percentDiscount: number, expiredDate: Date) {
-        this.name = name;
+    constructor(code: string, percentDiscount: number, expiredDate: Date) {
+        this.code = code;
         this.percentDiscount = percentDiscount;
         this.expiredDate = expiredDate
     }

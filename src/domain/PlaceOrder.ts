@@ -1,4 +1,7 @@
 import FreightCalculator from '../domain-services/FreightCalculator';
+import CouponRepository from '../infraestructure-services/repository/CouponRepository';
+import ItemRepository from '../infraestructure-services/repository/ItemRepository';
+import OrderRepository from '../infraestructure-services/repository/OrderRepository';
 import ZipcodeCalculatorAPI from '../infraestructure-services/ZipcodeCalculatorAPI';
 import ZipcodeCalculatorAPIMemory from '../infraestructure-services/ZipcodeCalculatorAPIMemory';
 import Coupon from './Coupon';
@@ -9,46 +12,35 @@ import PlaceOrderOutputDTO from "./PlaceOrderOutputDTO";
 
 export default class PlaceOrder {
 
-    order: Order[];
-    coupons: Coupon[];
-    items: Item[];
+    orderRepository: OrderRepository;
+    itemRepository: ItemRepository;
+    couponRepository: CouponRepository;
     zipcodeCalculator: ZipcodeCalculatorAPI;
     
-    constructor() {
-        let tomorrow = new Date();
-        tomorrow.setTime(tomorrow.getTime()  +1);
-        let yesterday = new Date();
-        yesterday.setTime(yesterday.getTime()  -1);
-        this.order = [];
-        this.coupons = [
-            new Coupon('FREE20', 20, tomorrow),
-            new Coupon('FREE20_EXPIRED', 20, yesterday)
-        ];
-        this.items = [
-            new Item('1','Guitarra', 1000, 100, 50, 15, 3),
-            new Item('2', 'Amplificador', 5000, 50, 50, 50, 22),
-            new Item('3', 'Cabo', 30, 10, 10, 10, 1)
-        ];
-        this.zipcodeCalculator = new ZipcodeCalculatorAPIMemory();
+    constructor(itemRepository: ItemRepository, couponRepository: CouponRepository, orderRepository: OrderRepository, zipcodeCalculator: ZipcodeCalculatorAPI) {
+        this.itemRepository = itemRepository;
+        this.couponRepository = couponRepository;
+        this.orderRepository = orderRepository;
+        this.zipcodeCalculator = zipcodeCalculator;
     }
     
     execute(input: PlaceOrderInputDTO): PlaceOrderOutputDTO {
-        const order = new Order(input.cpf);
+        let order = new Order(input.cpf);
         const distance = this.zipcodeCalculator.calculate(input.zipcode, '99.999-99')
         for(const orderItem of input.items) {
-            const item = this.items.find(item => item.id === orderItem.id);
+            const item = this.itemRepository.getById(orderItem.id);
             if (!item) throw new Error('Item not found');
             order.addItem(orderItem.id, item.price, orderItem.quantity);
             order.freight += FreightCalculator.calculate(distance, item) * orderItem.quantity;
         }
         if(input.coupon) {
-            const coupon = this.coupons.find(coupon => coupon.name === input.coupon);
+            const coupon = this.couponRepository.getByName(input.coupon);
             if (coupon) {
                 order.addCoupon(coupon);
             }
         }
         const total = order.total;
-        this.order.push(order);
+        this.orderRepository.save(order);
         return new PlaceOrderOutputDTO({ total, freight: order.freight });
     }
 }

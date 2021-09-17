@@ -7,9 +7,11 @@ const Cpf_1 = __importDefault(require("./Cpf"));
 const OrderItem_1 = __importDefault(require("./OrderItem"));
 class Order {
     constructor(cpf) {
+        this.id = '';
         this.cpf = new Cpf_1.default(cpf);
         this.items = [];
         this.freight = 0;
+        this.orderDate = new Date();
     }
     get total() {
         let total = this.items.reduce(function (total, item) {

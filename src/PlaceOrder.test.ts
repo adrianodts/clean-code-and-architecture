@@ -1,5 +1,9 @@
 import PlaceOrderInputDTO from "./domain/PlaceOrderInputDTO";
 import PlaceOrder from "./domain/PlaceOrder";
+import OrderRepositoryMemory from "./infraestructure-services/repository/OrderRepositoryMemory";
+import ItemRepositoryMemory from "./infraestructure-services/repository/ItemRepositoryMemory";
+import CouponRepositoryMemory from "./infraestructure-services/repository/CouponRepositoryMemory";
+import ZipcodeCalculatorAPIMemory from "./infraestructure-services/ZipcodeCalculatorAPIMemory";
 
 test("should place an order", () => {
     const cpf = '000.000.001.91';
@@ -13,7 +17,11 @@ test("should place an order", () => {
         ], 
         coupon: 'FREE20'
     });
-    const placeOrder = new PlaceOrder();
+    const itemRepository = new ItemRepositoryMemory();
+    const couponRepository = new CouponRepositoryMemory()
+    const orderRepository = new OrderRepositoryMemory();
+    const zipcodeCalculatorAPI = new ZipcodeCalculatorAPIMemory();
+    const placeOrder = new PlaceOrder(itemRepository, couponRepository, orderRepository, zipcodeCalculatorAPI);
     const output = placeOrder.execute(placeOrderInputDTO);
     expect(output.total).toBe(5982);
 });
@@ -30,7 +38,11 @@ test("should place an order using an expired coupon", () => {
         ], 
         coupon: 'FREE20_EXPIRED'
     });
-    const placeOrder = new PlaceOrder();
+    const itemRepository = new ItemRepositoryMemory();
+    const couponRepository = new CouponRepositoryMemory()
+    const orderRepository = new OrderRepositoryMemory();
+    const zipcodeCalculatorAPI = new ZipcodeCalculatorAPIMemory();
+    const placeOrder = new PlaceOrder(itemRepository, couponRepository, orderRepository, zipcodeCalculatorAPI);
     const output = placeOrder.execute(placeOrderInputDTO);
     expect(output.total).toBe(7400);
 });
@@ -46,7 +58,11 @@ test("should place an order calculating freight", () => {
             { id: "3", quantity: 3 }
         ]
     });
-    const placeOrder = new PlaceOrder();
+    const itemRepository = new ItemRepositoryMemory();
+    const couponRepository = new CouponRepositoryMemory()
+    const orderRepository = new OrderRepositoryMemory();
+    const zipcodeCalculatorAPI = new ZipcodeCalculatorAPIMemory();
+    const placeOrder = new PlaceOrder(itemRepository, couponRepository, orderRepository, zipcodeCalculatorAPI);
     const output = placeOrder.execute(placeOrderInputDTO);
     expect(output.freight).toBe(310);
 });
