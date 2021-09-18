@@ -1,34 +1,35 @@
 import Coupon from "./Coupon";
 import Cpf from "./Cpf";
+import OrderCode from "./OrderCode";
 import OrderItem from "./OrderItem";
 
 export default class Order {
 
-    id: string;
+    code: OrderCode;
     cpf: Cpf;
     items: OrderItem[];
     coupon: Coupon | undefined;
     freight: number;
-    orderDate: Date;
+    issueDate: Date;
+    sequence: number;
 
-    constructor(cpf: string) {
-        this.id = '';
+    constructor(cpf: string, issueDate: Date = new Date(), sequence: number = 1) {
         this.cpf = new Cpf(cpf);
         this.items = [];
         this.freight = 0;
-        this.orderDate =  new Date();
+        this.issueDate =  issueDate;
+        this.sequence = sequence;
+        this.code = new OrderCode(issueDate, sequence);
     }
 
-    get total(): number {
+    getTotal(): number {
         let total = this.items.reduce(function(total, item) {
-            return total + item.total;
+            return total + item.getTotal();
         }, 0);
-
         if (this.coupon) {
             total -= (total * this.coupon.percentDiscount / 100);
         }
         total += this.freight;
-    
         return total;
     }
 

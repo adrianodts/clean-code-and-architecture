@@ -2,11 +2,18 @@ import postgres from 'pg-promise';
 import Database from './Database';
 
 export default class PgPromiseDatabase implements Database {
-    
-    connection: any;
+    private static instance: PgPromiseDatabase; 
+    private connection: any;
 
-    constructor() {
+    private constructor() {
         this.connection = postgres()('postgres://postgres:postgres@localhost:5432/app');
+    }
+
+    static getInstance(): PgPromiseDatabase {
+        if (!PgPromiseDatabase.instance) {
+            PgPromiseDatabase.instance = new PgPromiseDatabase();
+        }
+        return PgPromiseDatabase.instance;
     }
 
     many(query: string, parameters: any) {

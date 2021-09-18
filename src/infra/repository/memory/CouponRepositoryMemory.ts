@@ -6,17 +6,17 @@ export default class CouponRepositoryMemory implements CouponRepository {
     
     constructor() {
         let tomorrow = new Date();
-        tomorrow.setTime(tomorrow.getTime()  +1);
+        tomorrow.setDate(tomorrow.getDate() +1);
         let yesterday = new Date();
-        yesterday.setTime(yesterday.getTime()  -1);
+        yesterday.setDate(yesterday.getDate()  -1);
         this.coupons = [
-            new Coupon('FREE20', 20, tomorrow),
-            new Coupon('FREE20_EXPIRED', 20, yesterday)
+            new Coupon("FREE20", 20, tomorrow),
+            new Coupon("FREE20_EXPIRED", 20, yesterday)
         ];
     }
 
-    getByName(code: string): Coupon | undefined {
-        return this.coupons.find(coupon => coupon.code === code)
+    getByName(code: string): Promise<Coupon | undefined> {
+        return Promise.resolve(this.coupons.find(coupon => coupon.code === code));
     }
 
 }
