@@ -1,0 +1,50 @@
+version: "3"
+
+services:
+
+  # app:
+  #   container_name: app
+  #   build: .
+  #   restart: always
+  #   env_file: 
+  #       - .env
+  #   volumes:
+  #       - .:/usr/src/app
+  #       #- /usr/src/app/node_modules
+  #   # depends_on: 
+  #   #     - db
+  #   # links:
+  #   #     - db
+  #   ports: 
+  #     - ${APP_PORT}:3001
+  #   extra_hosts:
+  #     - "host.docker.internal:172.17.0.1"
+  #   command: npm run test
+
+  db:
+    #image: postgres:9.4
+    container_name: db
+    build:
+     context: ./docker/postgres
+     dockerfile: Dockerfile  
+    #platform: linux/x86_64
+    restart: always
+    #command: cp /pg_hba.conf /var/lib/postgresql/data
+    #command: cp ./init-user-db.sh /docker-entrypoint-initdb.d
+    #command: /etc/init.d/postgresql start psql --command "CREATE USER docker WITH SUPERUSER PASSWORD 'docker';" createdb -O app docker
+    env_file: 
+        - .env
+    ports: 
+        - ${DB_PORT}:5432
+    tty: true
+    volumes: 
+      - dbdata:${DB_DATA}
+    environment: 
+      - POSTGRES_DB=${DB_NAME}
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+    extra_hosts:
+      - "host.docker.internal:172.17.0.1"
+
+volumes:
+    dbdata:
