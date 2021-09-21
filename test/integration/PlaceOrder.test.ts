@@ -1,15 +1,19 @@
 import PlaceOrder from "../../src/application/PlaceOrder";
 import PlaceOrderInputDTO from "../../src/application/PlaceOrderInputDTO";
-import CouponRepositoryMemory from "../../src/infra/repository/memory/CouponRepositoryMemory";
-import ItemRepositoryMemory from "../../src/infra/repository/memory/ItemRepositoryMemory";
-import OrderRepositoryMemory from "../../src/infra/repository/memory/OrderRepositoryMemory";
 import ZipcodeCalculatorAPIMemory from "../../src/infra/gateway/memory/ZipcodeCalculatorAPIMemory";
-import ItemRepositoryDatabase from "../../src/infra/repository/database/ItemRepositoryDatabase";
-import PgPromiseDatabase from "../../src/infra/database/PgPromiseDatabase";
-import CouponRepositoryDatabase from "../../src/infra/repository/database/CouponRepositoryDatabase";
-import OrderRepositoryDatabase from "../../src/infra/repository/database/OrderRepositoryDatabase";
 import DatabaseRepositoryFactory from "../../src/infra/factory/DatabaseRepositoryFactory";
 import MemoryRepositoryFactory from "../../src/infra/factory/MemoryRepositoryFactory";
+import RepositoryFactory from "../../src/domain/factory/RepositoryFactory";
+import ZipcodeCalculatorAPI from "../../src/domain/gateway/ZipcodeCalculatorAPI";
+
+
+let repositoryFactory: RepositoryFactory;
+let zipcodeCalculatorAPI: ZipcodeCalculatorAPI;
+
+beforeEach(async () => {
+    repositoryFactory = new DatabaseRepositoryFactory();
+    zipcodeCalculatorAPI = new ZipcodeCalculatorAPIMemory();
+});
 
 test("should place an order using 20 percent discount coupon", async () => {
     const cpf = "000.000.001.91";
@@ -23,8 +27,6 @@ test("should place an order using 20 percent discount coupon", async () => {
         ], 
         coupon: "FREE20"
     });
-    const zipcodeCalculatorAPI = new ZipcodeCalculatorAPIMemory();
-    const repositoryFactory = new DatabaseRepositoryFactory();
     const placeOrder = new PlaceOrder(repositoryFactory, zipcodeCalculatorAPI);
     const output = await placeOrder.execute(placeOrderInputDTO);
     expect(output.total).toBe(5982);
@@ -42,8 +44,7 @@ test("should place an order using an expired coupon", async () => {
         ], 
         coupon: "FREE20_EXPIRED"
     });
-    const repositoryFactory = new MemoryRepositoryFactory();
-    const zipcodeCalculatorAPI = new ZipcodeCalculatorAPIMemory();
+    repositoryFactory = new MemoryRepositoryFactory();
     const placeOrder = new PlaceOrder(repositoryFactory, zipcodeCalculatorAPI);
     const output = await placeOrder.execute(placeOrderInputDTO);
     expect(output.total).toBe(7400);
@@ -60,8 +61,6 @@ test("should place an order calculating freight", async () => {
             { id: "3", quantity: 3 }
         ]
     });
-    const zipcodeCalculatorAPI = new ZipcodeCalculatorAPIMemory();
-    const repositoryFactory = new DatabaseRepositoryFactory();
     const placeOrder = new PlaceOrder(repositoryFactory, zipcodeCalculatorAPI);
     const output = await placeOrder.execute(placeOrderInputDTO);
     expect(output.freight).toBe(310);
@@ -80,7 +79,6 @@ test("should place an order calculating code", async () => {
         issueDate: new Date(2021, 1, 1),
         coupon: "FREE20_EXPIRED"
     });
-    const zipcodeCalculatorAPI = new ZipcodeCalculatorAPIMemory();
     const repositoryFactory = new MemoryRepositoryFactory();
     const placeOrder = new PlaceOrder(repositoryFactory, zipcodeCalculatorAPI);
     const output = await placeOrder.execute(placeOrderInputDTO);

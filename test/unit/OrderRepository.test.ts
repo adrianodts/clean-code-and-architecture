@@ -1,6 +1,5 @@
 import Coupon from "../../src/domain/entity/Coupon";
 import Order from "../../src/domain/entity/Order";
-import OrderIdGenerator from "../../src/domain/entity/OrderCode";
 import OrderRepositoryMemory from "../../src/infra/repository/memory/OrderRepositoryMemory";
 
 test('Should save an order in repository', async () => {

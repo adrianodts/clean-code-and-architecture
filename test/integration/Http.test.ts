@@ -1,6 +1,6 @@
 import axios from "axios";
 
-test("Should invoke an API on route /orders/${code}", async () => {
+test.skip("Should invoke an API on route /orders/${code}", async () => {
 
     const response = await axios({
         url: "http://localhost:3000/orders/202100000001",

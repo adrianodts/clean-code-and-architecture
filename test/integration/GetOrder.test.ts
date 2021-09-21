@@ -3,7 +3,16 @@ import PlaceOrderInputDTO from "../../src/application/PlaceOrderInputDTO";
 import ZipcodeCalculatorAPIMemory from "../../src/infra/gateway/memory/ZipcodeCalculatorAPIMemory";
 import GetOrder from "../../src/application/GetOrder";
 import DatabaseRepositoryFactory from "../../src/infra/factory/DatabaseRepositoryFactory";
-import MemoryRepositoryFactory from "../../src/infra/factory/MemoryRepositoryFactory";
+import ZipcodeCalculatorAPI from "../../src/domain/gateway/ZipcodeCalculatorAPI";
+import RepositoryFactory from "../../src/domain/factory/RepositoryFactory";
+
+let repositoryFactory: RepositoryFactory;
+let zipcodeCalculatorAPI: ZipcodeCalculatorAPI;
+
+beforeEach(async () => {
+    repositoryFactory = new DatabaseRepositoryFactory();
+    zipcodeCalculatorAPI = new ZipcodeCalculatorAPIMemory();
+})
 
 test("should get an order", async () => {
     const placeOrderInputDTO = new PlaceOrderInputDTO({
@@ -17,8 +26,6 @@ test("should get an order", async () => {
         issueDate: new Date(2021, 1, 1),
         coupon: "FREE20"
     });
-    const zipcodeCalculatorAPI = new ZipcodeCalculatorAPIMemory();
-    const repositoryFactory = new DatabaseRepositoryFactory();
     const placeOrder = new PlaceOrder(repositoryFactory, zipcodeCalculatorAPI);
     const output = await placeOrder.execute(placeOrderInputDTO);
     const getOrder = new GetOrder(repositoryFactory);
