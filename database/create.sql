@@ -48,3 +48,19 @@ CREATE TABLE ccca.order_item (
 	quantity integer,
 	primary key (id_order, id_item)
 );
+
+CREATE TABLE ccca.tax_table (
+	id serial primary key,
+	id_item integer,
+	type text,
+	value numeric
+);
+
+INSERT INTO ccca.tax_table (id, id_item, type, value) VALUES (1, 1, 'default', 15);
+INSERT INTO ccca.tax_table (id, id_item, type, value) VALUES (2, 2, 'default', 15);
+INSERT INTO ccca.tax_table (id, id_item, type, value) VALUES (3, 3, 'default', 5);
+INSERT INTO ccca.tax_table (id, id_item, type, value) VALUES (4, 1, 'november', 5);
+INSERT INTO ccca.tax_table (id, id_item, type, value) VALUES (5, 2, 'november', 5);
+INSERT INTO ccca.tax_table (id, id_item, type, value) VALUES (6, 3, 'november', 1);
+
+ALTER TABLE ccca.order ADD taxes numeric; 

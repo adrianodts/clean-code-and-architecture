@@ -1,4 +1,3 @@
-import Coupon from "../../../domain/entity/Coupon";
 import Order from "../../../domain/entity/Order";
 import OrderRepository from "../../../domain/repository/OrderRepository";
 

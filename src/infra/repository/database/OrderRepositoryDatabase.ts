@@ -12,8 +12,8 @@ export default class OrderRepositoryDatabase implements OrderRepository {
     }
 
     async save(order: Order): Promise<void> {
-        const orderData = await this.database.one("insert into ccca.order (code, cpf, issue_date, freight, sequence, coupon_code) values ($1, $2, $3, $4, $5, $6) returning *", [
-            order.code.value, order.cpf.cpf, order.issueDate, order.freight, order.sequence, order.coupon?.code]);
+        const orderData = await this.database.one("insert into ccca.order (code, cpf, issue_date, freight, taxes, sequence, coupon_code) values ($1, $2, $3, $4, $5, $6, $7) returning *", [
+            order.code.value, order.cpf.cpf, order.issueDate, order.freight, order.taxes, order.sequence, order.coupon?.code]);
         for (const orderItem of order.items) {
             await this.database.one("insert into ccca.order_item (id_order, id_item, price, quantity) values ($1, $2, $3, $4) returning *", [
                 orderData.id, orderItem.id, orderItem.price, orderItem.quantity]);
@@ -35,6 +35,7 @@ export default class OrderRepositoryDatabase implements OrderRepository {
             order.addCoupon(coupon);
         }
         order.freight = parseFloat(orderData.freight);
+        order.taxes = parseFloat(orderData.taxes);
         return order;
     }
 

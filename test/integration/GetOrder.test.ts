@@ -1,10 +1,10 @@
-import PlaceOrder from "../../src/application/PlaceOrder";
-import PlaceOrderInputDTO from "../../src/application/PlaceOrderInputDTO";
+import PlaceOrder from "../../src/application/place-order/PlaceOrder";
 import ZipcodeCalculatorAPIMemory from "../../src/infra/gateway/memory/ZipcodeCalculatorAPIMemory";
-import GetOrder from "../../src/application/GetOrder";
+import GetOrder from "../../src/application/get-order/GetOrder";
 import DatabaseRepositoryFactory from "../../src/infra/factory/DatabaseRepositoryFactory";
 import ZipcodeCalculatorAPI from "../../src/domain/gateway/ZipcodeCalculatorAPI";
 import RepositoryFactory from "../../src/domain/factory/RepositoryFactory";
+import PlaceOrderInputDTO from "../../src/application/place-order/PlaceOrderInputDTO";
 
 let repositoryFactory: RepositoryFactory;
 let zipcodeCalculatorAPI: ZipcodeCalculatorAPI;
@@ -30,6 +30,7 @@ test("should get an order", async () => {
     const output = await placeOrder.execute(placeOrderInputDTO);
     const getOrder = new GetOrder(repositoryFactory);
     const orderOutput = await getOrder.execute(output.code);
+    expect(orderOutput.taxes).toBe(1054.5)
     expect(orderOutput.total).toBe(5982);
     expect(orderOutput.orderItems.length).toBe(3);
 });

@@ -1,10 +1,11 @@
-import PlaceOrder from "../../src/application/PlaceOrder";
-import PlaceOrderInputDTO from "../../src/application/PlaceOrderInputDTO";
+import PlaceOrder from "../../src/application/place-order/PlaceOrder";
 import ZipcodeCalculatorAPIMemory from "../../src/infra/gateway/memory/ZipcodeCalculatorAPIMemory";
 import DatabaseRepositoryFactory from "../../src/infra/factory/DatabaseRepositoryFactory";
 import MemoryRepositoryFactory from "../../src/infra/factory/MemoryRepositoryFactory";
 import RepositoryFactory from "../../src/domain/factory/RepositoryFactory";
 import ZipcodeCalculatorAPI from "../../src/domain/gateway/ZipcodeCalculatorAPI";
+import PgPromiseDatabase from "../../src/infra/database/PgPromiseDatabase";
+import PlaceOrderInputDTO from "../../src/application/place-order/PlaceOrderInputDTO";
 
 
 let repositoryFactory: RepositoryFactory;
@@ -83,4 +84,63 @@ test("should place an order calculating code", async () => {
     const placeOrder = new PlaceOrder(repositoryFactory, zipcodeCalculatorAPI);
     const output = await placeOrder.execute(placeOrderInputDTO);
     expect(output.code).toBe("202100000001");
+});
+
+test("should place an order calculating tax", async () => {
+    const cpf = "000.000.001.91";
+    const placeOrderInputDTO = new PlaceOrderInputDTO({
+        cpf: cpf, 
+        zipcode: "11.111-11",
+        items: [
+            { id: "1", quantity: 2 }, // (1000 * 15)/100 = 300
+            { id: "2", quantity: 1 }, // (5000 * 15)/100 = 750
+            { id: "3", quantity: 3 }  // (30 * 5)/100 = 4,5
+        ],
+        issueDate: new Date(2021, 1, 1),
+        coupon: "FREE20_EXPIRED"
+    });
+    const repositoryFactory = new MemoryRepositoryFactory();
+    const placeOrder = new PlaceOrder(repositoryFactory, zipcodeCalculatorAPI);
+    const output = await placeOrder.execute(placeOrderInputDTO);
+    expect(output.code).toBe("202100000001");
+    expect(output.taxes).toBe(1054.5);
+    
+});
+
+test("should place an order in database calculating tax", async () => {
+    const cpf = "000.000.001.91";
+    const placeOrderInputDTO = new PlaceOrderInputDTO({
+        cpf: cpf, 
+        zipcode: "11.111-11",
+        items: [
+            { id: "1", quantity: 2 }, // (1000 * 15)/100 = 300
+            { id: "2", quantity: 1 }, // (5000 * 15)/100 = 750
+            { id: "3", quantity: 3 }  // (30 * 5)/100 = 4,5
+        ],
+        issueDate: new Date(2021, 1, 1),
+        coupon: "FREE20_EXPIRED"
+    });
+    const placeOrder = new PlaceOrder(repositoryFactory, zipcodeCalculatorAPI);
+    const output = await placeOrder.execute(placeOrderInputDTO);
+    expect(output.taxes).toBe(1054.5);
+    
+});
+
+test("should place an order in database calculating tax in november", async () => {
+    const cpf = "000.000.001.91";
+    const placeOrderInputDTO = new PlaceOrderInputDTO({
+        cpf: cpf, 
+        zipcode: "11.111-11",
+        items: [
+            { id: "1", quantity: 2 }, // (1000 * 5)/100 = 100
+            { id: "2", quantity: 1 }, // (5000 * 5)/100 = 250
+            { id: "3", quantity: 3 }  // (30 * 1)/100 = 0.9
+        ],
+        issueDate: new Date("2020-11-19"),
+        coupon: "FREE20_EXPIRED"
+    });
+    const placeOrder = new PlaceOrder(repositoryFactory, zipcodeCalculatorAPI);
+    const output = await placeOrder.execute(placeOrderInputDTO);
+    expect(output.taxes).toBe(350.9);
+    
 });

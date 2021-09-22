@@ -1,7 +1,7 @@
-import CouponRepository from "../domain/repository/CouponRepository";
-import ItemRepository from "../domain/repository/ItemRepository";
-import OrderRepository from "../domain/repository/OrderRepository";
-import RepositoryFactory from "../domain/factory/RepositoryFactory";
+import RepositoryFactory from "../../domain/factory/RepositoryFactory";
+import CouponRepository from "../../domain/repository/CouponRepository";
+import ItemRepository from "../../domain/repository/ItemRepository";
+import OrderRepository from "../../domain/repository/OrderRepository";
 import GetOrderOutput from "./GetOrderOutput";
 
 export default class GetOrder {
@@ -31,6 +31,7 @@ export default class GetOrder {
         return new GetOrderOutput({
             code: order.code.value,
             freight: order.freight,
+            taxes: order.taxes,
             total: order.getTotal(),
             orderItems
         });

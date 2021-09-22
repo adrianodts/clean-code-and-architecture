@@ -1,7 +1,5 @@
-import GetOrder from "../../application/GetOrder";
+import GetOrder from "../../application/get-order/GetOrder";
 import RepositoryFactory from "../../domain/factory/RepositoryFactory";
-import OrderRepository from "../../domain/repository/OrderRepository";
-import DatabaseRepositoryFactory from "../factory/DatabaseRepositoryFactory";
 import Http from "./Http";
 
 export default class RoutesConfig {
