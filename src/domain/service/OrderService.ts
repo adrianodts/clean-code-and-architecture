@@ -38,9 +38,9 @@ export default class OrderService {
         let order = new Order(input.cpf, input.issueDate, sequence);
         const distance = this.zipcodeCalculator.calculate(input.zipcode, "99.999-99")
         for(const orderItem of input.items) {
-            const item = await this.itemRepository.getById(orderItem.id);
+            const item = await this.itemRepository.getById(orderItem.idItem);
             if (!item) throw new Error("Item not found");
-            order.addItem(orderItem.id, item.price, orderItem.quantity);
+            order.addItem(orderItem.idItem, item.price, orderItem.quantity);
             order.freight += FreightCalculator.calculate(distance, item) * orderItem.quantity;
             const taxTables = await this.taxTableRepository.getByIdItem(item.id);
             if (!taxTables) throw new Error("Tax for item was not found");

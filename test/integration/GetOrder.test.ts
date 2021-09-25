@@ -20,9 +20,9 @@ test("should get an order", async () => {
         cpf: "000.000.001.91", 
         zipcode: "11.111-11",
         items: [
-            { id: "1", quantity: 2 },
-            { id: "2", quantity: 1 },
-            { id: "3", quantity: 3 }
+            { idItem: "1", quantity: 2 },
+            { idItem: "2", quantity: 1 },
+            { idItem: "3", quantity: 3 }
         ],
         issueDate: new Date(2021, 1, 1),
         coupon: "FREE20"

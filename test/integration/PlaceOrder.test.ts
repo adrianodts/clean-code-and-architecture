@@ -22,9 +22,9 @@ test("should place an order calculating code", async () => {
         cpf: cpf, 
         zipcode: "11.111-11",
         items: [
-            { id: "1", quantity: 2 },
-            { id: "2", quantity: 1 },
-            { id: "3", quantity: 3 }
+            { idItem: "1", quantity: 2 },
+            { idItem: "2", quantity: 1 },
+            { idItem: "3", quantity: 3 }
         ],
         issueDate: new Date(2021, 1, 1),
         coupon: "FREE20_EXPIRED"
@@ -41,9 +41,9 @@ test("should place an order using 20 percent discount coupon", async () => {
         cpf: cpf, 
         zipcode: "11.111-11",
         items: [
-            { id: "1", quantity: 2 },
-            { id: "2", quantity: 1 },
-            { id: "3", quantity: 3 }
+            { idItem: "1", quantity: 2 },
+            { idItem: "2", quantity: 1 },
+            { idItem: "3", quantity: 3 }
         ], 
         coupon: "FREE20"
     });
@@ -58,9 +58,9 @@ test("should place an order using an expired coupon", async () => {
         cpf: cpf, 
         zipcode: "11.111-11",
         items: [
-            { id: "1", quantity: 2 },
-            { id: "2", quantity: 1 },
-            { id: "3", quantity: 3 }
+            { idItem: "1", quantity: 2 },
+            { idItem: "2", quantity: 1 },
+            { idItem: "3", quantity: 3 }
         ], 
         coupon: "FREE20_EXPIRED"
     });
@@ -76,9 +76,9 @@ test("should place an order calculating freight", async () => {
         cpf: cpf, 
         zipcode: "11.111-11",
         items: [
-            { id: "1", quantity: 2 },
-            { id: "2", quantity: 1 },
-            { id: "3", quantity: 3 }
+            { idItem: "1", quantity: 2 },
+            { idItem: "2", quantity: 1 },
+            { idItem: "3", quantity: 3 }
         ]
     });
     const placeOrder = new PlaceOrder(repositoryFactory, zipcodeCalculatorAPI);
@@ -92,9 +92,9 @@ test("should place an order calculating tax", async () => {
         cpf: cpf, 
         zipcode: "11.111-11",
         items: [
-            { id: "1", quantity: 2 }, // (1000 * 15)/100 = 300
-            { id: "2", quantity: 1 }, // (5000 * 15)/100 = 750
-            { id: "3", quantity: 3 }  // (30 * 5)/100 = 4,5
+            { idItem: "1", quantity: 2 }, // (1000 * 15)/100 = 300
+            { idItem: "2", quantity: 1 }, // (5000 * 15)/100 = 750
+            { idItem: "3", quantity: 3 }  // (30 * 5)/100 = 4,5
         ],
         issueDate: new Date(2021, 1, 1),
         coupon: "FREE20_EXPIRED"
@@ -113,9 +113,9 @@ test("should place an order in database calculating tax", async () => {
         cpf: cpf, 
         zipcode: "11.111-11",
         items: [
-            { id: "1", quantity: 2 }, // (1000 * 15)/100 = 300
-            { id: "2", quantity: 1 }, // (5000 * 15)/100 = 750
-            { id: "3", quantity: 3 }  // (30 * 5)/100 = 4,5
+            { idItem: "1", quantity: 2 }, // (1000 * 15)/100 = 300
+            { idItem: "2", quantity: 1 }, // (5000 * 15)/100 = 750
+            { idItem: "3", quantity: 3 }  // (30 * 5)/100 = 4,5
         ],
         issueDate: new Date(2021, 1, 1),
         coupon: "FREE20_EXPIRED"
@@ -132,9 +132,9 @@ test("should place an order in database calculating tax in november", async () =
         cpf: cpf, 
         zipcode: "11.111-11",
         items: [
-            { id: "1", quantity: 2 }, // (1000 * 5)/100 = 100
-            { id: "2", quantity: 1 }, // (5000 * 5)/100 = 250
-            { id: "3", quantity: 3 }  // (30 * 1)/100 = 0.9
+            { idItem: "1", quantity: 2 }, // (1000 * 5)/100 = 100
+            { idItem: "2", quantity: 1 }, // (5000 * 5)/100 = 250
+            { idItem: "3", quantity: 3 }  // (30 * 1)/100 = 0.9
         ],
         issueDate: new Date("2020-11-19"),
         coupon: "FREE20_EXPIRED"
@@ -152,7 +152,7 @@ test("should not place an order when item out of stock", async () => {
         cpf: cpf, 
         zipcode: "11.111-11",
         items: [
-            { id: "1", quantity: 50 }
+            { idItem: "1", quantity: 50 }
         ],
         issueDate: new Date(2021, 1, 1),
         coupon: "FREE20_EXPIRED"
