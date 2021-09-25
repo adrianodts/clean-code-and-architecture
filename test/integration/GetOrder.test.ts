@@ -5,12 +5,13 @@ import DatabaseRepositoryFactory from "../../src/infra/factory/DatabaseRepositor
 import ZipcodeCalculatorAPI from "../../src/domain/gateway/ZipcodeCalculatorAPI";
 import RepositoryFactory from "../../src/domain/factory/RepositoryFactory";
 import PlaceOrderInputDTO from "../../src/application/place-order/PlaceOrderInputDTO";
+import MemoryRepositoryFactory from "../../src/infra/factory/MemoryRepositoryFactory";
 
 let repositoryFactory: RepositoryFactory;
 let zipcodeCalculatorAPI: ZipcodeCalculatorAPI;
 
 beforeEach(async () => {
-    repositoryFactory = new DatabaseRepositoryFactory();
+    repositoryFactory = new MemoryRepositoryFactory();
     zipcodeCalculatorAPI = new ZipcodeCalculatorAPIMemory();
 })
 
@@ -29,6 +30,7 @@ test("should get an order", async () => {
     const placeOrder = new PlaceOrder(repositoryFactory, zipcodeCalculatorAPI);
     const output = await placeOrder.execute(placeOrderInputDTO);
     const getOrder = new GetOrder(repositoryFactory);
+    console.log(output)
     const orderOutput = await getOrder.execute(output.code);
     expect(orderOutput.taxes).toBe(1054.5)
     expect(orderOutput.total).toBe(5982);

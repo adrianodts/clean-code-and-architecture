@@ -11,6 +11,9 @@ export default class HapiHttp implements Http {
         });
     }
 
+    async filter(fn: any): Promise<void> {
+    }
+
     convertUrl (url: string) : string {
         return url.replace(/\$/g, "");
     }

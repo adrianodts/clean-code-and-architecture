@@ -3,6 +3,7 @@ import PlaceOrderInputDTO from "./PlaceOrderInputDTO";
 import PlaceOrderOutputDTO from "./PlaceOrderOutputDTO";
 import RepositoryFactory from "../../domain/factory/RepositoryFactory";
 import OrderService from "../../domain/service/OrderService";
+import StockCalculator from "../../domain/service/StockCalculator";
 
 export default class PlaceOrder {
 

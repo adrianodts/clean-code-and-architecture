@@ -5,7 +5,7 @@ import OrderRepositoryDatabase from "../../src/infra/repository/database/OrderRe
 import OrderRepositoryMemory from "../../src/infra/repository/memory/OrderRepositoryMemory";
 
 test('Should save an order in memory repository', async () => {
-    const orderRepository = new OrderRepositoryMemory();
+    const orderRepository = OrderRepositoryMemory.getInstance();
     const sequence = await orderRepository.count() + 1;
     const cpf = '000.000.001.91';
     let tomorrow = new Date();

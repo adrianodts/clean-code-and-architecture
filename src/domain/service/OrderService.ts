@@ -1,13 +1,16 @@
 import PlaceOrderInputDTO from "../../application/place-order/PlaceOrderInputDTO";
 import Order from "../entity/Order";
+import StockEntry from "../entity/StockEntry";
 import RepositoryFactory from "../factory/RepositoryFactory";
 import TaxCalculatorFactory from "../factory/TaxCalculatorFactory";
 import ZipcodeCalculatorAPI from "../gateway/ZipcodeCalculatorAPI";
 import CouponRepository from "../repository/CouponRepository";
 import ItemRepository from "../repository/ItemRepository";
 import OrderRepository from "../repository/OrderRepository";
+import StockEntryRepository from "../repository/StockEntryRepository";
 import TaxTableRepository from "../repository/TaxTableRepository";
 import FreightCalculator from "./FreightCalculator";
+import StockCalculator from "./StockCalculator";
 
 export default class OrderService {
 
@@ -15,14 +18,18 @@ export default class OrderService {
     itemRepository: ItemRepository;
     taxTableRepository: TaxTableRepository;
     couponRepository: CouponRepository;
+    stockEntryRepository: StockEntryRepository;
     zipcodeCalculator: ZipcodeCalculatorAPI;
+    stockCalculator: StockCalculator;
 
     constructor(repositoryFactory: RepositoryFactory, zipcodeCalculator: ZipcodeCalculatorAPI) {
         this.itemRepository = repositoryFactory.createItemRepository();
         this.couponRepository = repositoryFactory.createCouponRepository();
         this.orderRepository = repositoryFactory.createOrderRepository();
         this.taxTableRepository = repositoryFactory.createTaxTableRepository();
+        this.stockEntryRepository = repositoryFactory.createStockEntryRepository();
         this.zipcodeCalculator = zipcodeCalculator;
+        this.stockCalculator = new StockCalculator();
     }
 
     async create(input: PlaceOrderInputDTO): Promise<Order> {
@@ -38,7 +45,14 @@ export default class OrderService {
             const taxTables = await this.taxTableRepository.getByIdItem(item.id);
             if (!taxTables) throw new Error("Tax for item was not found");
             const taxes = taxCalculator.calculate(item, taxTables);
-            order.taxes += taxes * orderItem.quantity; 
+            order.taxes += taxes * orderItem.quantity;
+            const stockEntries = await this.stockEntryRepository.getByIdItem(item.id);
+            if (!stockEntries) throw new Error("Item stock not found");
+            const stockQuantity = this.stockCalculator.calculate(stockEntries); 
+            if (stockQuantity < orderItem.quantity) {
+                throw new Error("There is an item out of stock");
+            }
+            this.stockEntryRepository.save(new StockEntry(item.id, "out", orderItem.quantity, new Date()));
         }
         
         if(input.coupon) {
